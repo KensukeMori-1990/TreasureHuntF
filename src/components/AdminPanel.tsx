@@ -69,178 +69,409 @@ export default function AdminPanel({
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-        <button
-          onClick={handleStartGame}
-          disabled={state.gameActive}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: state.gameActive ? '#ccc' : '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: state.gameActive ? 'not-allowed' : 'pointer',
-          }}
-        >
-          🟢 ゲーム開始
-        </button>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '2rem',
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        backgroundColor: '#1a1a2e',
+        borderRadius: '16px',
+        padding: '2rem',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+      }}>
+        <h1 style={{
+          color: '#fff',
+          fontSize: '2.5rem',
+          marginBottom: '2rem',
+          textAlign: 'center',
+          fontWeight: '700',
+        }}>
+          🎯 TreasureHunt 管理画面
+        </h1>
 
-        <button
-          onClick={handleStopGame}
-          disabled={!state.gameActive}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: !state.gameActive ? '#ccc' : '#f44336',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: !state.gameActive ? 'not-allowed' : 'pointer',
-          }}
-        >
-          🔴 ゲーム停止
-        </button>
-
-        <button
-          onClick={handleResetGame}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: '#FF9800',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          🔄 ゲームリセット
-        </button>
-
-        <button
-          onClick={handleResetDevices}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: '#2196F3',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          📱 デバイスリセット
-        </button>
-
-        <button
-          onClick={refreshState}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: '#9C27B0',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          🔄 再読み込み
-        </button>
-      </div>
-
-      <div style={{ marginBottom: '2rem' }}>
-        <h2>ゲーム状態</h2>
-        <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-          {state.gameActive ? '🟢 ゲーム進行中' : '🔴 ゲーム停止中'}
-        </p>
-      </div>
-
-      <div style={{ marginBottom: '2rem' }}>
-        <h2>チームスコア</h2>
-        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-          <div
+        {/* コントロールボタン */}
+        <div style={{
+          marginBottom: '2rem',
+          display: 'flex',
+          gap: '1rem',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+        }}>
+          <button
+            onClick={handleStartGame}
+            disabled={state.gameActive}
             style={{
-              padding: '1.5rem',
-              backgroundColor: '#ffebee',
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              backgroundColor: state.gameActive ? '#555' : '#10b981',
+              color: 'white',
+              border: 'none',
               borderRadius: '8px',
-              flex: '1',
-              minWidth: '200px',
+              cursor: state.gameActive ? 'not-allowed' : 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s',
+              boxShadow: state.gameActive ? 'none' : '0 4px 12px rgba(16, 185, 129, 0.4)',
             }}
           >
-            <h3 style={{ margin: '0 0 1rem 0', color: '#c62828' }}>🔴 {state.teams.red.name}</h3>
-            <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0' }}>{state.teams.red.score} pt</p>
-            <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem', color: '#666' }}>
-              取得回数: {state.teams.red.totalAccesses} / デバイス数: {state.teams.red.uniqueDevices}
-            </p>
-          </div>
+            🟢 ゲーム開始
+          </button>
 
-          <div
+          <button
+            onClick={handleStopGame}
+            disabled={!state.gameActive}
             style={{
-              padding: '1.5rem',
-              backgroundColor: '#fff9c4',
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              backgroundColor: !state.gameActive ? '#555' : '#ef4444',
+              color: 'white',
+              border: 'none',
               borderRadius: '8px',
-              flex: '1',
-              minWidth: '200px',
+              cursor: !state.gameActive ? 'not-allowed' : 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s',
+              boxShadow: !state.gameActive ? 'none' : '0 4px 12px rgba(239, 68, 68, 0.4)',
             }}
           >
-            <h3 style={{ margin: '0 0 1rem 0', color: '#f57f17' }}>🟡 {state.teams.yellow.name}</h3>
-            <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '0' }}>{state.teams.yellow.score} pt</p>
-            <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem', color: '#666' }}>
-              取得回数: {state.teams.yellow.totalAccesses} / デバイス数: {state.teams.yellow.uniqueDevices}
-            </p>
+            🔴 ゲーム停止
+          </button>
+
+          <button
+            onClick={handleResetGame}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#f59e0b',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s',
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)',
+            }}
+          >
+            🔄 ゲームリセット
+          </button>
+
+          <button
+            onClick={handleResetDevices}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+            }}
+          >
+            📱 デバイスリセット
+          </button>
+
+          <button
+            onClick={refreshState}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#8b5cf6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              transition: 'all 0.3s',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
+            }}
+          >
+            🔄 再読み込み
+          </button>
+        </div>
+
+        {/* ゲーム状態 */}
+        <div style={{
+          marginBottom: '2rem',
+          padding: '1.5rem',
+          backgroundColor: '#16213e',
+          borderRadius: '12px',
+          border: '2px solid #0f3460',
+        }}>
+          <h2 style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            marginBottom: '1rem',
+            fontWeight: '600',
+          }}>
+            ゲーム状態
+          </h2>
+          <p style={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            color: state.gameActive ? '#10b981' : '#ef4444',
+            margin: 0,
+          }}>
+            {state.gameActive ? '🟢 ゲーム進行中' : '🔴 ゲーム停止中'}
+          </p>
+        </div>
+
+        {/* チームスコア */}
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            marginBottom: '1rem',
+            fontWeight: '600',
+          }}>
+            チームスコア
+          </h2>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                flex: '1',
+                minWidth: '250px',
+                padding: '2rem',
+                background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                borderRadius: '12px',
+                boxShadow: '0 4px 16px rgba(220, 38, 38, 0.3)',
+              }}
+            >
+              <h3 style={{
+                margin: '0 0 1rem 0',
+                color: '#fff',
+                fontSize: '1.3rem',
+                fontWeight: '600',
+              }}>
+                🔴 {state.teams.red.name}
+              </h3>
+              <p style={{
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                margin: '0',
+                color: '#fff',
+              }}>
+                {state.teams.red.score}
+              </p>
+              <p style={{
+                margin: '0.5rem 0 0 0',
+                fontSize: '1rem',
+                color: '#fecaca',
+              }}>
+                取得: {state.teams.red.totalAccesses} / 端末: {state.teams.red.uniqueDevices}
+              </p>
+            </div>
+
+            <div
+              style={{
+                flex: '1',
+                minWidth: '250px',
+                padding: '2rem',
+                background: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)',
+                borderRadius: '12px',
+                boxShadow: '0 4px 16px rgba(234, 179, 8, 0.3)',
+              }}
+            >
+              <h3 style={{
+                margin: '0 0 1rem 0',
+                color: '#fff',
+                fontSize: '1.3rem',
+                fontWeight: '600',
+              }}>
+                🟡 {state.teams.yellow.name}
+              </h3>
+              <p style={{
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                margin: '0',
+                color: '#fff',
+              }}>
+                {state.teams.yellow.score}
+              </p>
+              <p style={{
+                margin: '0.5rem 0 0 0',
+                fontSize: '1rem',
+                color: '#fef3c7',
+              }}>
+                取得: {state.teams.yellow.totalAccesses} / 端末: {state.teams.yellow.uniqueDevices}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div style={{ marginBottom: '2rem' }}>
-        <h2>QRコード取得状況</h2>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f5f5f5' }}>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>QRコードID</th>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>ポイント</th>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>発見者数</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(state.qrCodes).map(([qrId, data]) => (
-                <tr key={qrId}>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{qrId}</td>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{data.point}</td>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{data.foundBy.length}</td>
+        {/* QRコード取得状況 */}
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            marginBottom: '1rem',
+            fontWeight: '600',
+          }}>
+            QRコード取得状況
+          </h2>
+          <div style={{
+            overflowX: 'auto',
+            backgroundColor: '#16213e',
+            borderRadius: '12px',
+            padding: '1rem',
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+            }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0f3460' }}>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    QRコードID
+                  </th>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    ポイント
+                  </th>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    発見者数
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Object.entries(state.qrCodes).map(([qrId, data]) => (
+                  <tr key={qrId} style={{ borderBottom: '1px solid #0f3460' }}>
+                    <td style={{
+                      padding: '0.75rem',
+                      color: '#e0e0e0',
+                      fontWeight: '500',
+                    }}>
+                      {qrId}
+                    </td>
+                    <td style={{
+                      padding: '0.75rem',
+                      color: '#10b981',
+                      fontWeight: '600',
+                    }}>
+                      {data.point}
+                    </td>
+                    <td style={{
+                      padding: '0.75rem',
+                      color: '#60a5fa',
+                      fontWeight: '600',
+                    }}>
+                      {data.foundBy.length}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h2>デバイス情報</h2>
-        <p>登録デバイス数: {Object.keys(state.devices).length}</p>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f5f5f5' }}>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>デバイスID</th>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>チーム</th>
-                <th style={{ padding: '0.5rem', border: '1px solid #ddd', textAlign: 'left' }}>取得QR数</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(state.devices).map(([deviceId, data]) => (
-                <tr key={deviceId}>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd', fontSize: '0.8rem' }}>{deviceId}</td>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>
-                    {data.team === 'red' ? '🔴 赤' : '🟡 黄'}
-                  </td>
-                  <td style={{ padding: '0.5rem', border: '1px solid #ddd' }}>{data.qrAccesses.length}</td>
+        {/* デバイス情報 */}
+        <div>
+          <h2 style={{
+            color: '#fff',
+            fontSize: '1.5rem',
+            marginBottom: '1rem',
+            fontWeight: '600',
+          }}>
+            デバイス情報
+          </h2>
+          <p style={{
+            color: '#9ca3af',
+            marginBottom: '1rem',
+            fontSize: '1.1rem',
+          }}>
+            登録デバイス数: {Object.keys(state.devices).length}
+          </p>
+          <div style={{
+            overflowX: 'auto',
+            backgroundColor: '#16213e',
+            borderRadius: '12px',
+            padding: '1rem',
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+            }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0f3460' }}>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    デバイスID
+                  </th>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    チーム
+                  </th>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    取得QR数
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Object.entries(state.devices).map(([deviceId, data]) => (
+                  <tr key={deviceId} style={{ borderBottom: '1px solid #0f3460' }}>
+                    <td style={{
+                      padding: '0.75rem',
+                      fontSize: '0.9rem',
+                      color: '#9ca3af',
+                      fontFamily: 'monospace',
+                    }}>
+                      {deviceId}
+                    </td>
+                    <td style={{
+                      padding: '0.75rem',
+                      color: '#fff',
+                      fontWeight: '600',
+                    }}>
+                      {data.team === 'red' ? '🔴 赤' : '🟡 黄'}
+                    </td>
+                    <td style={{
+                      padding: '0.75rem',
+                      color: '#60a5fa',
+                      fontWeight: '600',
+                    }}>
+                      {data.qrAccesses.length}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
