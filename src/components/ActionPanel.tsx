@@ -3,14 +3,21 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { RenderProps } from '../../../NerfGameApps/src/core/types';
 import { TreasureHuntState, TreasureHuntAction, Team } from '../types';
+import SuccessPanel from './SuccessPanel';
 
 export default function ActionPanel({ state, executeAction }: RenderProps<TreasureHuntState>) {
+  const [searchParams] = useSearchParams();
+  const qrTag = searchParams.get('qrTag');
+
   const [deviceId, setDeviceId] = useState<string>('');
   const [team, setTeam] = useState<Team | null>(null);
   const [qrId, setQrId] = useState('');
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [autoProcessing, setAutoProcessing] = useState(false);
+  const [successData, setSuccessData] = useState<{ point: number; team: Team; qrId: string } | null>(null);
 
   useEffect(() => {
     let storedDeviceId = localStorage.getItem('treasurehunt_deviceId');
@@ -28,10 +35,59 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
     }
   }, []);
 
+  // Auto-process QR code if qrTag parameter exists and team is selected
+  useEffect(() => {
+    if (qrTag && team && deviceId && !autoProcessing && !successData) {
+      setAutoProcessing(true);
+      handleQRAccessAuto(qrTag, team);
+    }
+  }, [qrTag, team, deviceId]);
+
   const handleTeamSelect = (selectedTeam: Team) => {
     setTeam(selectedTeam);
     localStorage.setItem('treasurehunt_team', selectedTeam);
     setMessage({ type: 'success', text: `${selectedTeam === 'red' ? '赤チーム' : '黄チーム'}を選択しました！` });
+    // qrTag があれば自動処理は次の useEffect で実行される
+  };
+
+  const handleQRAccessAuto = async (qrCode: string, selectedTeam: Team) => {
+    if (!state.gameActive) {
+      setMessage({ type: 'error', text: 'ゲームが開始されていません' });
+      setAutoProcessing(false);
+      return;
+    }
+
+    if (!state.qrCodes[qrCode]) {
+      setMessage({ type: 'error', text: 'QRコードが見つかりません' });
+      setAutoProcessing(false);
+      return;
+    }
+
+    const device = state.devices[deviceId];
+    if (device && device.qrAccesses.includes(qrCode)) {
+      setMessage({ type: 'error', text: 'このQRコードは既に取得済みです' });
+      setAutoProcessing(false);
+      return;
+    }
+
+    try {
+      const action: TreasureHuntAction = {
+        type: 'QR_ACCESS',
+        payload: {
+          deviceId,
+          team: selectedTeam,
+          qrId: qrCode,
+        },
+      };
+
+      await executeAction(action);
+
+      const point = state.qrCodes[qrCode]?.point || 0;
+      setSuccessData({ point, team: selectedTeam, qrId: qrCode });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'エラーが発生しました' });
+      setAutoProcessing(false);
+    }
   };
 
   const handleQRAccess = async () => {
@@ -74,12 +130,17 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
       await executeAction(action);
 
       const point = state.qrCodes[qrId]?.point || 0;
-      setMessage({ type: 'success', text: `🎉 ${point}ポイント獲得！` });
+      setSuccessData({ point, team, qrId });
       setQrId('');
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'エラーが発生しました' });
     }
   };
+
+  // Show success screen if QR access was successful
+  if (successData) {
+    return <SuccessPanel point={successData.point} team={successData.team} qrId={successData.qrId} />;
+  }
 
   if (!team) {
     return (
