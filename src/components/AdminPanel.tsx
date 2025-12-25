@@ -354,31 +354,33 @@ export default function AdminPanel({
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(state.qrCodes).map(([qrId, data]) => (
-                  <tr key={qrId} style={{ borderBottom: '1px solid #0f3460' }}>
-                    <td style={{
-                      padding: '0.75rem',
-                      color: '#e0e0e0',
-                      fontWeight: '500',
-                    }}>
-                      {qrId}
-                    </td>
-                    <td style={{
-                      padding: '0.75rem',
-                      color: '#10b981',
-                      fontWeight: '600',
-                    }}>
-                      {data.point}
-                    </td>
-                    <td style={{
-                      padding: '0.75rem',
-                      color: '#60a5fa',
-                      fontWeight: '600',
-                    }}>
-                      {data.foundBy.length}
-                    </td>
-                  </tr>
-                ))}
+                {Object.entries(state.qrCodes)
+                  .sort(([aId], [bId]) => aId.localeCompare(bId))
+                  .map(([qrId, data]) => (
+                    <tr key={qrId} style={{ borderBottom: '1px solid #0f3460' }}>
+                      <td style={{
+                        padding: '0.75rem',
+                        color: '#e0e0e0',
+                        fontWeight: '500',
+                      }}>
+                        {qrId}
+                      </td>
+                      <td style={{
+                        padding: '0.75rem',
+                        color: '#10b981',
+                        fontWeight: '600',
+                      }}>
+                        {data.point}
+                      </td>
+                      <td style={{
+                        padding: '0.75rem',
+                        color: '#60a5fa',
+                        fontWeight: '600',
+                      }}>
+                        {data.foundBy.length}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

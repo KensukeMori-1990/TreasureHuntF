@@ -9,6 +9,7 @@ import { TreasureHuntState, TreasureHuntAction, Team } from '../types';
 import SuccessPanel from './SuccessPanel';
 
 export default function ActionPanel({ state, executeAction }: RenderProps<TreasureHuntState>) {
+  // フックは常に最初に呼ぶ必要がある（Reactのルール）
   const [searchParams] = useSearchParams();
   const qrTag = searchParams.get('qrTag');
 
@@ -18,6 +19,23 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [autoProcessing, setAutoProcessing] = useState(false);
   const [successData, setSuccessData] = useState<{ point: number; team: Team; qrId: string } | null>(null);
+
+  // 🛡️ 防御的プログラミング: stateの安全性チェック（フック呼び出し後）
+  if (!state || !state.qrCodes || !state.teams || !state.devices) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontSize: '1.5rem',
+      }}>
+        ゲームデータを読み込み中...
+      </div>
+    );
+  }
 
   useEffect(() => {
     let storedDeviceId = localStorage.getItem('treasurehunt_deviceId');
@@ -35,21 +53,7 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
     }
   }, []);
 
-  // Auto-process QR code if qrTag parameter exists and team is selected
-  useEffect(() => {
-    if (qrTag && team && deviceId && !autoProcessing && !successData) {
-      setAutoProcessing(true);
-      handleQRAccessAuto(qrTag, team);
-    }
-  }, [qrTag, team, deviceId]);
-
-  const handleTeamSelect = (selectedTeam: Team) => {
-    setTeam(selectedTeam);
-    localStorage.setItem('treasurehunt_team', selectedTeam);
-    setMessage({ type: 'success', text: `${selectedTeam === 'red' ? '赤チーム' : '黄チーム'}を選択しました！` });
-    // qrTag があれば自動処理は次の useEffect で実行される
-  };
-
+  // QRコード自動アクセス処理
   const handleQRAccessAuto = async (qrCode: string, selectedTeam: Team) => {
     if (!state.gameActive) {
       setMessage({ type: 'error', text: 'ゲームが開始されていません' });
@@ -88,6 +92,20 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
       setMessage({ type: 'error', text: error.message || 'エラーが発生しました' });
       setAutoProcessing(false);
     }
+  };
+
+  // Auto-process QR code if qrTag parameter exists and team is selected
+  useEffect(() => {
+    if (qrTag && team && deviceId && !autoProcessing && !successData) {
+      setAutoProcessing(true);
+      handleQRAccessAuto(qrTag, team);
+    }
+  }, [qrTag, team, deviceId, autoProcessing, successData]);
+
+  const handleTeamSelect = (selectedTeam: Team) => {
+    setTeam(selectedTeam);
+    localStorage.setItem('treasurehunt_team', selectedTeam);
+    setMessage({ type: 'success', text: `${selectedTeam === 'red' ? '赤チーム' : '黄チーム'}を選択しました！` });
   };
 
   const handleQRAccess = async () => {
