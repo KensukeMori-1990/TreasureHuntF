@@ -2,7 +2,7 @@
  * TreasureHunt Game Rule Implementation
  */
 
-import { GameRule, RenderProps } from '../../NerfGameApps/src/core/types';
+import { GameRule, RenderProps } from './core/types';
 import { TreasureHuntState, TreasureHuntAction, Team } from './types';
 import AdminPanel from './components/AdminPanel';
 import ViewPanel from './components/ViewPanel';

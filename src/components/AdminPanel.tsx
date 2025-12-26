@@ -2,7 +2,7 @@
  * TreasureHunt Admin Panel
  */
 
-import { RenderProps } from '../../../NerfGameApps/src/core/types';
+import { RenderProps } from '../core/types';
 import { TreasureHuntState, TreasureHuntAction } from '../types';
 
 export default function AdminPanel({

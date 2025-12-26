@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { RenderProps } from '../../../NerfGameApps/src/core/types';
+import { RenderProps } from '../core/types';
 import { TreasureHuntState, TreasureHuntAction, Team } from '../types';
 import SuccessPanel from './SuccessPanel';
 

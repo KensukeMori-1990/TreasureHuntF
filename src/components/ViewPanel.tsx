@@ -2,7 +2,7 @@
  * TreasureHunt View Panel (Navigation Screen)
  */
 
-import { RenderProps } from '../../../NerfGameApps/src/core/types';
+import { RenderProps } from '../core/types';
 import { TreasureHuntState } from '../types';
 
 export default function ViewPanel({ state }: RenderProps<TreasureHuntState>) {
