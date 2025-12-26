@@ -47,9 +47,9 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
     }
     setDeviceId(storedDeviceId);
 
-    const storedTeam = localStorage.getItem('treasurehunt_team') as Team | null;
-    if (storedTeam) {
-      setTeam(storedTeam);
+    const storedTeamValue = localStorage.getItem('treasurehunt_team');
+    if (storedTeamValue === 'red' || storedTeamValue === 'yellow') {
+      setTeam(storedTeamValue);
     }
   }, []);
 
@@ -100,7 +100,7 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
         setAutoProcessing(false);
       }
     })();
-  }, [qrTag, team, deviceId]);
+  }, [qrTag, team, deviceId, autoProcessing, successData, state, executeAction]);
 
   const handleTeamSelect = (selectedTeam: Team) => {
     setTeam(selectedTeam);
