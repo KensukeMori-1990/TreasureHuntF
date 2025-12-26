@@ -53,54 +53,54 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
     }
   }, []);
 
-  // QRコード自動アクセス処理
-  const handleQRAccessAuto = async (qrCode: string, selectedTeam: Team) => {
-    if (!state.gameActive) {
-      setMessage({ type: 'error', text: 'ゲームが開始されていません' });
-      setAutoProcessing(false);
-      return;
-    }
-
-    if (!state.qrCodes[qrCode]) {
-      setMessage({ type: 'error', text: 'QRコードが見つかりません' });
-      setAutoProcessing(false);
-      return;
-    }
-
-    const device = state.devices[deviceId];
-    if (device && device.qrAccesses.includes(qrCode)) {
-      setMessage({ type: 'error', text: 'このQRコードは既に取得済みです' });
-      setAutoProcessing(false);
-      return;
-    }
-
-    try {
-      const action: TreasureHuntAction = {
-        type: 'QR_ACCESS',
-        payload: {
-          deviceId,
-          team: selectedTeam,
-          qrId: qrCode,
-        },
-      };
-
-      await executeAction(action);
-
-      const point = state.qrCodes[qrCode]?.point || 0;
-      setSuccessData({ point, team: selectedTeam, qrId: qrCode });
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'エラーが発生しました' });
-      setAutoProcessing(false);
-    }
-  };
-
-  // Auto-process QR code if qrTag parameter exists and team is selected
+  // QRコード自動アクセス処理 - useEffect内で直接実行
   useEffect(() => {
-    if (qrTag && team && deviceId && !autoProcessing && !successData) {
-      setAutoProcessing(true);
-      handleQRAccessAuto(qrTag, team);
+    if (!qrTag || !team || !deviceId || autoProcessing || successData) {
+      return;
     }
-  }, [qrTag, team, deviceId, autoProcessing, successData]);
+
+    setAutoProcessing(true);
+
+    (async () => {
+      if (!state.gameActive) {
+        setMessage({ type: 'error', text: 'ゲームが開始されていません' });
+        setAutoProcessing(false);
+        return;
+      }
+
+      if (!state.qrCodes[qrTag]) {
+        setMessage({ type: 'error', text: 'QRコードが見つかりません' });
+        setAutoProcessing(false);
+        return;
+      }
+
+      const device = state.devices[deviceId];
+      if (device && device.qrAccesses.includes(qrTag)) {
+        setMessage({ type: 'error', text: 'このQRコードは既に取得済みです' });
+        setAutoProcessing(false);
+        return;
+      }
+
+      try {
+        const action: TreasureHuntAction = {
+          type: 'QR_ACCESS',
+          payload: {
+            deviceId,
+            team,
+            qrId: qrTag,
+          },
+        };
+
+        await executeAction(action);
+
+        const point = state.qrCodes[qrTag]?.point || 0;
+        setSuccessData({ point, team, qrId: qrTag });
+      } catch (error: any) {
+        setMessage({ type: 'error', text: error.message || 'エラーが発生しました' });
+        setAutoProcessing(false);
+      }
+    })();
+  }, [qrTag, team, deviceId]);
 
   const handleTeamSelect = (selectedTeam: Team) => {
     setTeam(selectedTeam);
