@@ -3,15 +3,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { RenderProps } from '../core/types';
 import { TreasureHuntState, TreasureHuntAction, Team } from '../types';
 import SuccessPanel from './SuccessPanel';
 
-export default function ActionPanel({ state, executeAction }: RenderProps<TreasureHuntState>) {
-  // フックは常に最初に呼ぶ必要がある（Reactのルール）
-  const [searchParams] = useSearchParams();
-  const qrTag = searchParams.get('qrTag');
+export default function ActionPanel({ state, executeAction, qrTag, navigate }: RenderProps<TreasureHuntState>) {
 
   const [deviceId, setDeviceId] = useState<string>('');
   const [team, setTeam] = useState<Team | null>(null);
@@ -157,7 +153,7 @@ export default function ActionPanel({ state, executeAction }: RenderProps<Treasu
 
   // Show success screen if QR access was successful
   if (successData) {
-    return <SuccessPanel point={successData.point} team={successData.team} qrId={successData.qrId} />;
+    return <SuccessPanel point={successData.point} team={successData.team} qrId={successData.qrId} navigate={navigate} />;
   }
 
   if (!team) {

@@ -44,4 +44,10 @@ export interface RenderProps<TState> {
 
   /** 管理者権限があるか */
   isAdmin: boolean;
+
+  /** URLから取得したQRコードタグ (ActionPanelで使用) */
+  qrTag?: string;
+
+  /** ナビゲーション関数 (SuccessPanelで使用) */
+  navigate?: (path: string) => void;
 }
