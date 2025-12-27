@@ -10,6 +10,16 @@ export default function AdminPanel({
   executeAction,
   refreshState,
 }: RenderProps<TreasureHuntState>) {
+  const handleCopyUrl = (qrId: string) => {
+    const url = `${window.location.origin}/action?qr=${qrId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert(`URLをコピーしました: ${url}`);
+    }).catch((err) => {
+      console.error('コピーに失敗しました:', err);
+      alert('コピーに失敗しました');
+    });
+  };
+
   const handleStartGame = async () => {
     const action: TreasureHuntAction = {
       type: 'START_GAME',
@@ -362,6 +372,15 @@ export default function AdminPanel({
                   }}>
                     発見者数
                   </th>
+                  <th style={{
+                    padding: '0.75rem',
+                    textAlign: 'left',
+                    color: '#fff',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1a1a2e',
+                  }}>
+                    URL
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -389,6 +408,35 @@ export default function AdminPanel({
                         fontWeight: '600',
                       }}>
                         {data.foundBy.length}
+                      </td>
+                      <td style={{
+                        padding: '0.75rem',
+                      }}>
+                        <button
+                          onClick={() => handleCopyUrl(qrId)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem',
+                            backgroundColor: '#8b5cf6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontWeight: '600',
+                            transition: 'all 0.3s',
+                            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.4)',
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = '#7c3aed';
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = '#8b5cf6';
+                            e.currentTarget.style.transform = 'scale(1)';
+                          }}
+                        >
+                          📋 URLコピー
+                        </button>
                       </td>
                     </tr>
                   ))}
