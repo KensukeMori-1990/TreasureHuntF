@@ -47,16 +47,19 @@ export default function ActionPanel({ state, executeAction, qrTag, navigate }: R
     const storedTeamValue = localStorage.getItem('treasurehunt_team');
     const serverDevice = state.devices[storedDeviceId];
 
-    // チーム選択が必要な条件
-    const needsTeamSelection =
-      !storedTeamValue ||                        // 1. localStorageにチーム情報がない
-      !serverDevice ||                           // 2. サーバーにデバイス情報がない
-      serverDevice.team !== storedTeamValue;     // 3. チーム情報が不一致
-
-    if (needsTeamSelection) {
-      setTeam(null);  // チーム選択画面を表示
-    } else if (storedTeamValue === 'red' || storedTeamValue === 'yellow') {
-      setTeam(storedTeamValue);  // チーム情報が一致する場合のみ設定
+    // チーム選択が必要かどうかを判定
+    if (!storedTeamValue || (storedTeamValue !== 'red' && storedTeamValue !== 'yellow')) {
+      // 1. localStorageにチーム情報がない、または無効な値
+      setTeam(null);
+    } else if (!serverDevice) {
+      // 2. サーバーにデバイス情報がない
+      setTeam(null);
+    } else if (serverDevice.team !== storedTeamValue) {
+      // 3. チーム情報が不一致
+      setTeam(null);
+    } else {
+      // すべての条件が一致する場合のみチームを設定
+      setTeam(storedTeamValue);
     }
   }, [state.devices]);
 
