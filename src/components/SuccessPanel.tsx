@@ -3,15 +3,16 @@
  */
 
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface SuccessPanelProps {
   point: number;
   team: 'red' | 'yellow';
   qrId: string;
-  navigate?: (path: string) => void;
 }
 
-export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPanelProps) {
+export default function SuccessPanel({ point, team, qrId }: SuccessPanelProps) {
+  const navigate = useNavigate();
   const teamName = team === 'red' ? '赤チーム' : '黄チーム';
 
   useEffect(() => {
@@ -44,10 +45,8 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
     }
   };
 
-  const handleView = () => {
-    if (navigate) {
-      navigate('/treasurehunt/view');
-    }
+  const handleNextQR = () => {
+    navigate('/treasurehunt/action');
   };
 
   return (
@@ -172,9 +171,9 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
           QRコード: {qrId}
         </div>
 
-        {/* ViewPanelに遷移するボタン */}
+        {/* 次のQRコードを探すボタン */}
         <button
-          onClick={handleView}
+          onClick={handleNextQR}
           style={{
             width: '100%',
             padding: '1.25rem',
@@ -191,7 +190,7 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
-          🎯 現在の獲得ポイントを確認する
+          🎯 次のQRコードを探す
         </button>
       </div>
     </div>
