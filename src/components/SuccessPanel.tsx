@@ -3,16 +3,15 @@
  */
 
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface SuccessPanelProps {
   point: number;
   team: 'red' | 'yellow';
   qrId: string;
+  onNext: () => void;
 }
 
-export default function SuccessPanel({ point, team, qrId }: SuccessPanelProps) {
-  const navigate = useNavigate();
+export default function SuccessPanel({ point, team, qrId, onNext }: SuccessPanelProps) {
   const teamName = team === 'red' ? '赤チーム' : '黄チーム';
 
   useEffect(() => {
@@ -46,7 +45,7 @@ export default function SuccessPanel({ point, team, qrId }: SuccessPanelProps) {
   };
 
   const handleNextQR = () => {
-    navigate('/treasurehunt/action');
+    onNext();
   };
 
   return (
