@@ -3,7 +3,7 @@
  */
 
 import { RenderProps } from '../core/types';
-import { TreasureHuntState, TreasureHuntAction } from '../types';
+import { TreasureHuntState, TreasureHuntAction, DeviceData } from '../types';
 
 export default function AdminPanel({
   state,
@@ -33,9 +33,20 @@ export default function AdminPanel({
   };
 
   const handleResetGame = async () => {
-    if (!confirm('ゲームをリセットしますか？（スコアとデバイスがすべてクリアされます）')) {
+    if (!confirm('ゲームをリセットしますか？（スコアとQRアクセス履歴がクリアされます。チーム情報は維持されます）')) {
       return;
     }
+
+    // デバイス情報を保持しつつqrAccessesのみクリア
+    const resetDevices: { [deviceId: string]: DeviceData } = {};
+    Object.entries(state.devices).forEach(([deviceId, deviceData]) => {
+      resetDevices[deviceId] = {
+        team: deviceData.team,
+        qrAccesses: [],
+        createdAt: deviceData.createdAt,
+      };
+    });
+
     const action: TreasureHuntAction = {
       type: 'RESET_GAME',
       payload: {
@@ -43,7 +54,7 @@ export default function AdminPanel({
           red: { name: '赤チーム', score: 0, totalAccesses: 0, uniqueDevices: 0 },
           yellow: { name: '黄チーム', score: 0, totalAccesses: 0, uniqueDevices: 0 },
         },
-        devices: {},
+        devices: resetDevices,
         qrCodes: Object.keys(state.qrCodes).reduce((acc, qrId) => {
           acc[qrId] = { ...state.qrCodes[qrId], foundBy: [] };
           return acc;
