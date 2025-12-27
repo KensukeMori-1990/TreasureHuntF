@@ -167,7 +167,7 @@ export default function ActionPanel({ state, executeAction, qrTag, navigate }: R
 
   // Show success screen if QR access was successful
   if (successData) {
-    return <SuccessPanel point={successData.point} team={successData.team} qrId={successData.qrId} navigate={navigate} />;
+    return <SuccessPanel point={successData.point} team={successData.team} qrId={successData.qrId} />;
   }
 
   if (!team) {
