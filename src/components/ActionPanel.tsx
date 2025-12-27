@@ -49,6 +49,45 @@ export default function ActionPanel({ state, executeAction, qrTag, navigate }: R
     }
   }, []);
 
+  // デバイスリセット検知用useEffect
+  useEffect(() => {
+    // ガードクロージャ: 必要な条件が揃っていない場合は何もしない
+    if (!state || !state.devices) {
+      return; // stateがまだロードされていない
+    }
+
+    if (!deviceId) {
+      return; // deviceIdがまだ設定されていない
+    }
+
+    if (!team) {
+      return; // チーム選択前なので検知不要
+    }
+
+    // 検知ロジック: localStorageにチーム情報があるが、サーバーに存在しない
+    const deviceExistsInServer = !!state.devices[deviceId];
+    const teamStoredLocally = localStorage.getItem('treasurehunt_team');
+
+    if (teamStoredLocally && !deviceExistsInServer) {
+      // デバイスリセット検知！
+      console.log('🔔 Device reset detected. Clearing local state...');
+
+      // localStorageをクリア
+      localStorage.removeItem('treasurehunt_team');
+      localStorage.removeItem('treasurehunt_deviceId');
+
+      // stateをリセット
+      setTeam(null);
+      setDeviceId('');
+
+      // ユーザーへの通知
+      setMessage({
+        type: 'error',
+        text: '管理者によりデバイス情報がリセットされました。チームを再選択してください。'
+      });
+    }
+  }, [state, deviceId, team]);
+
   // QRコード自動アクセス処理 - useEffect内で直接実行
   useEffect(() => {
     if (!qrTag || !team || !deviceId || autoProcessing || successData) {

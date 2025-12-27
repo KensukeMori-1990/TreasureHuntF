@@ -44,9 +44,9 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
     }
   };
 
-  const handleNextQR = () => {
+  const handleView = () => {
     if (navigate) {
-      navigate('/treasurehunt/action');
+      navigate('/treasurehunt/view');
     }
   };
 
@@ -172,9 +172,9 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
           QRコード: {qrId}
         </div>
 
-        {/* 次のQRコードを探すボタン */}
+        {/* ViewPanelに遷移するボタン */}
         <button
-          onClick={handleNextQR}
+          onClick={handleView}
           style={{
             width: '100%',
             padding: '1.25rem',
@@ -191,7 +191,7 @@ export default function SuccessPanel({ point, team, qrId, navigate }: SuccessPan
           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
-          🎯 次のQRコードを探す
+          🎯 現在の獲得ポイントを確認する
         </button>
       </div>
     </div>
